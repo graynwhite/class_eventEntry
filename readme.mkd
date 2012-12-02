@@ -23,30 +23,31 @@ Calling the script
 ------------------
 Use something like the the following in your script:
 
-< 1. Be sure to include the script file.
-< 2. $ee= new eventEnty
-< 3. $date_arrray=$ee->getNextWeekDay("Mon")
-<    or whichever day of the week your publication will be published 
-<    e.g. "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
-<    You can also add a second parameter afte a comma indicating which
-<    week you are going to publish. -1 indicates last week, +1 is this week 
-<    which is the default, or +2 to get the week after.
-< 4. The $date_array will contain the following dates:
-<    * date_begin in the form yyyy-mm-dd
-<		*date_end in the form yyyy-mm-dd
-<		*pubdate in the form November 26, 2012
-<		*pubdate1 in the form Mon. Nov. 26 Events
-<		*pubdate2 in the form Tue. Nov. 27 Events
-<		*pubdate3 in the form Wed. Nov. 28 Events
-<		*pubdate4 in the form Thu. Nov. 29 Events
-<		*pubdate5 in the form Fri. Nov. 30 Events
-<		*pubdate6 in the form Sat. Dec. 1 Events
-<		*pubdate7 in the form Sun. Dec. 2 Events
-<		*selectdate1 in the form 2012-11-26
-<		*selectdate2 in the form 2012-11-27
-<		*selectdate3 in the form 2012-11-28
-<		*selectdate4 in the form 2012-11-29
-<		*selectdate5 in the form 2012-11-30
-<		*selectdate6 in the form 2012-12-01
-<		*selectdate7 in the form 2012-12-02
+
+	< 1. Be sure to include the script file.
+	< 2. $ee= new eventEnty
+	< 3. $date_arrray=$ee->getNextWeekDay("Mon")
+	<    or whichever day of the week your publication will be published 
+	<    e.g. "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
+	<    You can also add a second parameter afte a comma indicating which
+	<    week you are going to publish. -1 indicates last week, +1 is this week 
+	<    which is the default, or +2 to get the week after.
+	< 4. The $date_array will contain the following dates:
+	<    * date_begin in the form yyyy-mm-dd
+	<		*date_end in the form yyyy-mm-dd
+	<		*pubdate in the form November 26, 2012
+	<		*pubdate1 in the form Mon. Nov. 26 Events
+	<		*pubdate2 in the form Tue. Nov. 27 Events
+	<		*pubdate3 in the form Wed. Nov. 28 Events
+	<		*pubdate4 in the form Thu. Nov. 29 Events
+	<		*pubdate5 in the form Fri. Nov. 30 Events
+	<		*pubdate6 in the form Sat. Dec. 1 Events
+	<		*pubdate7 in the form Sun. Dec. 2 Events
+	<		*selectdate1 in the form 2012-11-26
+	<		*selectdate2 in the form 2012-11-27
+	<		*selectdate3 in the form 2012-11-28
+	<		*selectdate4 in the form 2012-11-29
+	<		*selectdate5 in the form 2012-11-30
+	<		*selectdate6 in the form 2012-12-01
+	<		*selectdate7 in the form 2012-12-02
 		
