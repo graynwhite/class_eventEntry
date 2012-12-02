@@ -14,10 +14,6 @@ Over in the left column are links to the days in the week's events. The same dat
 
 The script that creates the newsletter automaticaly rolls over on Tuesday to the next week so that work on other parts of the newsletter can begin.
 
-Necessary modifications to script
----------------------------------
-
-In order to tailer this script for your use change line 106 to reflect your start date.
 
 Calling the script
 ------------------
@@ -26,7 +22,9 @@ Use something like the the following in your script:
 
 	< 1. Be sure to include the script file.
 	< 2. $ee= new eventEnty
-	< 3. $date_arrray=$ee->getNextWeekDay("Mon")
+	< 3. $ee->set_begin_publication_date($date_begin); $date_begin in the form mm/dd/yy
+	<    (the date that the publication first started publishing)
+	< 4. $date_arrray=$ee->getNextWeekDay("Mon")
 	<    or whichever day of the week your publication will be published 
 	<    e.g. "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
 	<    You can also add a second parameter afte a comma indicating which

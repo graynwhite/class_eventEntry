@@ -105,6 +105,19 @@ function eventEntry()
 {
 	$this->Begin_publishing_date = mktime(0,0,0,5,31,2003);
 }
+//==================================
+/**
+       *set begin publishing date
+       *@param date in the form mm/dd/yy
+       *
+       *
+*/
+//===================================
+function set_begin_publishing_date($date_input)
+{
+	$this->Begin_publishing_date = strtotime($date_input);
+	
+}
 	//==================================
 /**
        *Get publication dates
