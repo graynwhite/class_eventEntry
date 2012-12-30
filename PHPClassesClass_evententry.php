@@ -13,6 +13,16 @@ Class eventEntry{
 private $Begin_publishing_date;
 private $number_of_publishing_weeks;
 private $dow;
+private $todays_test_date = 0;
+private $beginMonth;
+private $beginDay;
+private $beginYear;
+private $editionFctr;
+public  $day_of_week_array=array('SUN' => 0, 'Mon' => 1, 'TUE' => 2, 'WED' => 3, 'THU' => 4, 'FRI' => 5, 'SAT' => 6);
+public  $month_array=array('01' => 'January','02'=> 'February','03'=>'March','04'=>'April','05'=>'May','06'=>'June','07'=>'July','08'=>'August','09'=>'September','10'=>'October','11'=>'November','12'=>'December');
+	function setTodaysTestDate($dateInput){
+	$this->todays_test_date = $dateInput;
+	}
   /**
   * valid email
   * @param   string
@@ -128,20 +138,46 @@ function set_begin_publishing_date($date_input)
        *@return an array of dates including a volume sesignation
 	   * such as Volume:10 Issue: 21
 */
-	functon getNextMonthDate($day_of_month){
+	function getNextMonthDate($day_of_month){
+	evententry::calcBeginDate();
+	$Timestamp = mktime(0,0,0,$this->beginMonth+1,$this->beginDay,$this->beginYear);
+	$datebegin = date('Y',$Timestamp) . '-' . date('m',$Timestamp). '-' . $day_of_month;
+	$Timestamp2 = mktime(0,0,0,date('m',$Timestamp)+1,date('d',$Timestamp)-1,date('Y',$Timestamp));
+	$dateEnd = date('Y',$Timestamp) . '-' . date('m',$Timestamp). '-' . date('t',$Timestamp);
+	$pubdate = date("F",$Timestamp) . ' ' . date('j',$Timestamp) . ', ' . date('Y',$Timestamp);
+	$dates = array('date_begin' => $datebegin,'date_end' => $dateEnd, 'pubdate' => $pubdate);
+	return $dates;
+	
+	}
+//===================================
+	function calcBeginDate(){
+	$this->beginMonth = date("m");
+		$this->beginDay= date("d");
+		$this->beginYear = date("Y");
+		$this->editionfctr = 0;
+		if(is_null($ptr)) // ptr is used to get previous week or future week
+		{
+			$this->editionFctr = 0;
+		}else{
+		$this->editionFctr= 7*$ptr;
+		}
+	if($this->todays_test_date != 0){
+	$workArray = explode('/',$this->todays_test_date);
+	$this->beginMonth = $workArray[0];
+	$this->beginDay = $workArray[1];
+	$this->beginYear = $workArray[2];
+	}	
+		
+	$Timestamp = mktime(0,0,0,$this->beginMonth,$this->beginDay+$this->editionFctr,$this->beginYear); // sets the timestamp to today or one week prior or one wwk in the future.
+
 	}
 //===================================
 	
 	function getNextWeekDay($day_of_week, $ptr=null ){
-	  
-	  $day_of_week_array=array('SUN' => 0, 'Mon' => 1, 'TUE' => 2, 'WED' => 3, 'THU' => 4, 'FRI' => 5, 'SAT' => 6);
-		$month_array=array('01' => 'January','02'=> 'February','03'=>'March','04'=>'April','05'=>'May','06'=>'June','07'=>'July','08'=>'August','09'=>'September','10'=>'October','11'=>'November','12'=>'December');
-
-	    $Month = date("m");
-		$Day= date("d");
-		$Year = date("Y");
-		$fctr = 0;
-		//==================================
+	  	evententry::calcBeginDate();
+	
+	    
+		
 /**
        *if $ptr is null it will be set ot 0
        * so the upcoming week's events will be extracted
@@ -149,16 +185,7 @@ function set_begin_publishing_date($date_input)
        * by 7 to select future weeks or past weeks
 */
 //===================================
-		if(is_null($ptr)) // ptr is used to get previous week or future week
-		{
-			$fctr = 0;
-		}else{
-		$fctr= 7*$ptr;
-		}
-		
-		
-	$Timestamp = mktime(0,0,0,$Month,$Day+$fctr,$Year); // sets the timestamp to today or one week prior or one wwk in the future.
-	
+			
 	$day_fctr=0;
 		if (date("w",$Timestamp) >= $day_of_week_array[$day_of_week]){
 		$day_fctr = 1;
@@ -167,7 +194,7 @@ function set_begin_publishing_date($date_input)
 	//echo("<br> Day factor  " . $day_fctr);	
 	for ($i=0;$i<7;$i++)
 	{
-    $Timestamp = mktime(0,0,0,$Month,$Day+$i+$fctr+day_fctr,$Year);
+    $Timestamp = mktime(0,0,0,$this->beginMonth,$this->beginDay+$i+$fctr+day_fctr,$this->beginYear);
 	$this_day = date("D",$Timestamp);
    //echo"<br> this day is $this_day" ;
     if ( $this_day == $day_of_week ){

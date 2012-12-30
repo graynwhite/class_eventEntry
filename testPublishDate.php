@@ -11,6 +11,7 @@ class TestPublicationDateWeekly extends  UnitTestCase {
     function testDates() {
 		$ee= new eventEntry;
 		$ee->set_begin_publishing_date("05/31/2003");
+		$ee->setTodaysTestDate('12/29/2012');
 		$date_returned= $ee->getNextWeekDay('Mon',$edition);
 		$begin_date = $date_returned['date_begin'];
 		$end_date = $date_returned['date_end'];
@@ -37,16 +38,17 @@ class TestPublicationDateMonthly extends  UnitTestCase {
     function testDates() {
 		$ee= new eventEntry;
 		$ee->set_begin_publishing_date("05/31/2003");
-		$date_returned= $ee->getNextWeekDay('Mon',$edition);
+		$ee->setTodaysTestDate('12/29/2012');
+		$date_returned= $ee->getNextMonthDate('01');
 		$begin_date = $date_returned['date_begin'];
 		$end_date = $date_returned['date_end'];
 		$pubdate = $date_returned['pubdate'];
 		$weekOfYear = $date_returned['wkOfYear'];
 		$volume = $date_returned['years'];
 		$editionNumber = $date_returned['plus_weeks'];
-		$this->assertEqual('2012-12-31',$begin_date);
-		$this->assertEqual('2013-01-07',$end_date);
-		$this->assertEqual('December 31, 2012',$pubdate);
+		$this->assertEqual('2013-01-01',$begin_date);
+		$this->assertEqual('2013-01-31',$end_date);
+		$this->assertEqual('January 1, 2013',$pubdate);
 		$this->assertEqual('10',$volume);
 		$this->assertEqual('33',$editionNumber);
 		
