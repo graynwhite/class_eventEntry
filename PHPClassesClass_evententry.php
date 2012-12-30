@@ -10,19 +10,31 @@ Class eventEntry{
 */
 //===================================
 
-private $Begin_publishing_date;
+private $Begin_publishing_date;// in time format default to may 31, 2003
+private $current_publishing_date; // in time format
 private $number_of_publishing_weeks;
+private $mode = 'weekly';
+private $volume; // first yeat published = 1
+private $edition; // edition within Volume
 private $dow;
-private $todays_test_date = 0;
+private $years;
+private $weeks;
+private $plus_weeks;
+private $todays_test_date = 0; // calculated or set
 private $beginMonth;
 private $beginDay;
 private $beginYear;
 private $editionFctr;
-public  $day_of_week_array=array('SUN' => 0, 'Mon' => 1, 'TUE' => 2, 'WED' => 3, 'THU' => 4, 'FRI' => 5, 'SAT' => 6);
+public  $day_of_week_array=array('SUN' => 0, 'MON' => 1, 'TUE' => 2, 'WED' => 3, 'THU' => 4, 'FRI' => 5, 'SAT' => 6);
 public  $month_array=array('01' => 'January','02'=> 'February','03'=>'March','04'=>'April','05'=>'May','06'=>'June','07'=>'July','08'=>'August','09'=>'September','10'=>'October','11'=>'November','12'=>'December');
+
+	function setMode($modeInput){
+	$this->mode = $modeInput;
+	}
 	function setTodaysTestDate($dateInput){
 	$this->todays_test_date = $dateInput;
 	}
+	
   /**
   * valid email
   * @param   string
@@ -140,15 +152,57 @@ function set_begin_publishing_date($date_input)
 */
 	function getNextMonthDate($day_of_month){
 	evententry::calcBeginDate();
+	
 	$Timestamp = mktime(0,0,0,$this->beginMonth+1,$this->beginDay,$this->beginYear);
+	
+	$this->current_publishing_date = $Timestamp;
+	evententry::setVolumeNumber();
+	
 	$datebegin = date('Y',$Timestamp) . '-' . date('m',$Timestamp). '-' . $day_of_month;
 	$Timestamp2 = mktime(0,0,0,date('m',$Timestamp)+1,date('d',$Timestamp)-1,date('Y',$Timestamp));
 	$dateEnd = date('Y',$Timestamp) . '-' . date('m',$Timestamp). '-' . date('t',$Timestamp);
-	$pubdate = date("F",$Timestamp) . ' ' . date('j',$Timestamp) . ', ' . date('Y',$Timestamp);
-	$dates = array('date_begin' => $datebegin,'date_end' => $dateEnd, 'pubdate' => $pubdate);
+	$pubdate = date("F",$Timestamp) . ', ' . date('Y',$Timestamp);
+	
+	$dates = array('date_begin' => $datebegin,
+	'date_end' => $dateEnd,
+	'years' => $this->years,
+	'plus_weeks' => $this->plus_weeks,
+	 'pubdate' => $pubdate);
 	return $dates;
 	
 	}
+//===================================
+	function setVolumeNumber(){
+	
+	//==================================
+/**
+       *$difference computes the number of SECONDS between the first
+       * publication and this publication
+       * then the number of weeks is computed by getting
+	   * the floor of difference divided by 86400 (seconds in a day) 
+       * times 7
+	   * Then years is computed by dividing weeks by 52.
+	   * Then plus weeks is the number of weeks  in the current year
+	   * Years is the bumped up by 1 to adjust volume to reflect
+	   * the fact that the first volume would be zero.
+*/
+//===================================
+	$difference = $this->current_publishing_date - $this->Begin_publishing_date;
+	
+	if ($this->mode == 'weekly'){
+	$this->weeks = floor($difference/(7*86400));
+	$this->years = floor($this->weeks/52);
+	$this->plus_weeks = $this->weeks -($this->years *52) + 1;
+	$this->years ++;
+	}
+	if ($this->mode == 'monthly'){
+	$yearNow= date('Y',$this->current_publishing_date);
+	$yearStarted = date('Y',$this->Begin_publishing_date);
+	$this->years = $yearNow-$yearStarted;
+	$this->plus_weeks = date('m',$this->current_publishing_date);
+	}
+	}
+
 //===================================
 	function calcBeginDate(){
 	$this->beginMonth = date("m");
@@ -201,36 +255,17 @@ function set_begin_publishing_date($date_input)
         break;
     }
 }
-
-
-	$Month =date("m",$Timestamp);
-	$Day= date("d",$Timestamp);
-	$Year = date("Y",$Timestamp);
-	$Timestamp = mktime(0,0,0,$Month,$Day,$Year);
-	//==================================
-/**
-       *$difference computes the number of SECONDS between the first
-       * publication and this publication
-       * then the number of weeks is computed by getting
-	   * the floor of difference divided by 86400 (seconds in a day) 
-       * times 7
-	   * Then years is computed by dividing weeks by 52.
-	   * Then plus weeks is the number of weeks by in the current year
-	   * Years is the bumped up by 1 to adjust volume to reflect
-	   * the fact that the first volume would be zero.
-*/
-//===================================
-	$difference = $Timestamp - $this->Begin_publishing_date;
-	$this->weeks = floor($difference/(7*86400));
-	$this->years = floor($this->weeks/52);
-	$this->plus_weeks = $this->weeks -($this->years *52) + 1;
-	$this->years ++;
+	$this->current_publishing_date = $Timestamp;
+	evententry::setVolumeNumber();
 		
-    $datebegin =$Year . "-" . $Month . "-" . $Day;
+    $datebegin = date('Y',$Timestamp) . "-" . date('m',$Timestamp) . "-" . date('d',$Timestamp);
 	$pubdate = date("F",$Timestamp) . ' ' . date('j',$Timestamp) . ', ' . date('Y',$Timestamp);
 	$pubdate1= strtoupper(date('D',$Timestamp)) . '. ' . date('M',$Timestamp) . '. ' . date('j',$Timestamp);
 	$selectdate1 = date('Y',$Timestamp) . '-' . date('m',$Timestamp) . '-' . date('d',$Timestamp);
-	//echo "week of year " . $wkOfYear = date('w',$Timestamp) . "<br>";
+	$Month= date('m',$Timestamp);
+	$Day = date('d',$Timestamp);
+	$Year = date('Y',$Timestamp);
+	
 	$editiondate = $Month . "-" . $Day . "-" . $Year;
 	$day2 = mktime(0,0,0,$Month,$Day+1,$Year);
 	$pubdate2 = strtoupper(date('D',$day2)) . '. ' . date('M',$day2) . '. ' . date('j',$day2);
@@ -267,11 +302,17 @@ function set_begin_publishing_date($date_input)
 	$Day= date("d",$LastDay);
 	$Year = date("Y",$LastDay);
 	$dateend =$Year . "-" . $Month . "-" . $Day;
+	
 	$dates = array('date_begin' => $datebegin, 'date_end' => $dateend ,'pubdate' => $pubdate,
 	'pubdate1' => $pubdate1,
 	'pubdate2' => $pubdate2, 'pubdate3' => $pubdate3 , 'pubdate4' => $pubdate4, 'pubdate5' => $pubdate5, 'pubdate6' => $pubdate6, 'pubdate7' => $pubdate7,
 	'select1' => $selectdate1, 'select2' => $selectdate2, 'select3' => $selectdate3,
-	'select4' => $selectdate4, 'select5' => $selectdate5, 'select6' =>$selectdate6, 'select7' => $selectdate7, 'select8' => $selectdate8, 'weeks' => $this->weeks, 'years' => $this->years, 'plus_weeks' => $this->plus_weeks, 'wkOfYear' => $this->wkOfYear);
+	'select4' => $selectdate4, 'select5' => $selectdate5, 'select6' =>$selectdate6, 'select7' => $selectdate7, 
+	'select8' => $selectdate8,
+	 'weeks' => $this->weeks,
+	 'years' => $this->years,
+	 'plus_weeks' => $this->plus_weeks);
+	  
 	//echo "<br> date begin in class is " . $datebegin . " and end date " . $dateend ;
 	return $dates;	
 	} // end of function get Next Week Day
