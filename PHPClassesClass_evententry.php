@@ -9,6 +9,7 @@ Class eventEntry{
        *
 */
 //===================================
+
 private $Begin_publishing_date;
 private $number_of_publishing_weeks;
 private $dow;
@@ -127,6 +128,8 @@ function set_begin_publishing_date($date_input)
        *@return an array of dates including a volume sesignation
 	   * such as Volume:10 Issue: 21
 */
+	functon getNextMonthDate($day_of_month){
+	}
 //===================================
 	
 	function getNextWeekDay($day_of_week, $ptr=null ){
