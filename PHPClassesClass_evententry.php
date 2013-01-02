@@ -16,6 +16,7 @@ private $number_of_publishing_weeks;
 private $mode = 'weekly';
 private $volume; // first yeat published = 1
 private $edition; // edition within Volume
+private $editionPtr;
 private $dow;
 private $years;
 private $weeks;
@@ -27,10 +28,12 @@ private $beginYear;
 private $editionFctr;
 public  $day_of_week_array=array('SUN' => 0, 'MON' => 1, 'TUE' => 2, 'WED' => 3, 'THU' => 4, 'FRI' => 5, 'SAT' => 6);
 public  $month_array=array('01' => 'January','02'=> 'February','03'=>'March','04'=>'April','05'=>'May','06'=>'June','07'=>'July','08'=>'August','09'=>'September','10'=>'October','11'=>'November','12'=>'December');
-
+	
+	
 	function setMode($modeInput){
 	$this->mode = $modeInput;
 	}
+	
 	function setTodaysTestDate($dateInput){
 	$this->todays_test_date = $dateInput;
 	}
@@ -172,6 +175,32 @@ function set_begin_publishing_date($date_input)
 	
 	}
 //===================================
+function getNextQuaterDate($day_of_month){
+	evententry::calcBeginDate();
+	
+	$Timestamp = mktime(0,0,0,$this->beginMonth+1,$this->beginDay,$this->beginYear);
+	
+	$this->current_publishing_date = $Timestamp;
+	evententry::setVolumeNumber();
+	
+	$datebegin = date('Y',$Timestamp) . '-' . date('m',$Timestamp). '-' . $day_of_month;
+	
+	
+	$Timestamp2 = mktime(0,0,0,date('m',$Timestamp)+2,date('d',$Timestamp)-1,date('Y',$Timestamp));
+	$dateEnd = date('Y',$Timestamp2) . '-' . date('m',$Timestamp2). '-' . date('t',$Timestamp2);
+	
+	$pubdate = date("F",$Timestamp) . ', ' . date('Y',$Timestamp);
+	
+	$dates = array('date_begin' => $datebegin,
+	'date_end' => $dateEnd,
+	'years' => $this->years,
+	'plus_weeks' => $this->plus_weeks,
+	 'pubdate' => $pubdate);
+	return $dates;
+	
+	}
+//===================================
+
 	function setVolumeNumber(){
 	
 	//==================================
@@ -205,32 +234,38 @@ function set_begin_publishing_date($date_input)
 
 //===================================
 	function calcBeginDate(){
-	$this->beginMonth = date("m");
-		$this->beginDay= date("d");
-		$this->beginYear = date("Y");
-		$this->editionfctr = 0;
-		if(is_null($ptr)) // ptr is used to get previous week or future week
-		{
-			$this->editionFctr = 0;
-		}else{
-		$this->editionFctr= 7*$ptr;
-		}
+	
+		
 	if($this->todays_test_date != 0){
 	$workArray = explode('/',$this->todays_test_date);
 	$this->beginMonth = $workArray[0];
 	$this->beginDay = $workArray[1];
 	$this->beginYear = $workArray[2];
-	}	
+	}else{
+	$this->beginMonth = date("m");
+		$this->beginDay= date("d");
+		$this->beginYear = date("Y");
+	
+	}
+	
+		$this->editionFctr= 7*$this->editionPtr;
+			
+	//echo "<br /> editionFctr is " . $this->editionFctr;
 		
-	$Timestamp = mktime(0,0,0,$this->beginMonth,$this->beginDay+$this->editionFctr,$this->beginYear); // sets the timestamp to today or one week prior or one wwk in the future.
+	$this->current_publishing_date = mktime(0,0,0,$this->beginMonth,$this->beginDay+$this->editionFctr,$this->beginYear);
+	
+	$this->beginMonth=date("m",$this->current_publishing_date);
+	$this->beginDay = date("d",$this->current_publishing_date);
+	$this->beginYear = date("Y",$this->current_publishing_date); // sets the timestamp to today or one week prior or one wwk in the future.
 
 	}
 //===================================
 	
-	function getNextWeekDay($day_of_week, $ptr=null ){
+	function getNextWeekDay($day_of_week,$ptr ){
+		$this->editionPtr=$ptr;
 	  	evententry::calcBeginDate();
 	
-	    
+	    $Timestamp=$this->current_publishing_date;
 		
 /**
        *if $ptr is null it will be set ot 0
@@ -248,7 +283,7 @@ function set_begin_publishing_date($date_input)
 	//echo("<br> Day factor  " . $day_fctr);	
 	for ($i=0;$i<7;$i++)
 	{
-    $Timestamp = mktime(0,0,0,$this->beginMonth,$this->beginDay+$i+$fctr+day_fctr,$this->beginYear);
+    $Timestamp = mktime(0,0,0,$this->beginMonth,$this->beginDay+$i,$this->beginYear);
 	$this_day = date("D",$Timestamp);
    //echo"<br> this day is $this_day" ;
     if ( $this_day == $day_of_week ){
