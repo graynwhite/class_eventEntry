@@ -175,9 +175,47 @@ function set_begin_publishing_date($date_input)
 	
 	}
 //===================================
+	//==================================
+/**
+       * Sets up next Quater date
+	   *@param $day_of_mont is the day the next quaters day of month
+*/
 function getNextQuaterDate($day_of_month){
+	$this->mode = "quarterly";
 	evententry::calcBeginDate();
 	
+	switch ($this->beginMonth)
+	{
+	case "12":
+	case "11":
+	case "10":
+		$nextQuarterMonth = 01;
+		$nextQuarterEdition = '01';
+		$nextQuarterName = "First Quarter";
+		break;
+	case "09":
+	case "08":
+	case "07";
+		$nextQuarterMonth = 10;
+		$nextQuarterEdition = '04';
+		$nextQuarterName = "Fourth Quarter";
+		break;
+	case "06":
+	case "05":
+	case "04":
+		$nextQuarterMonth = 07;
+		$nextQuarterEdition = '03';
+		$nextQuarterName = "Third Quarter";
+		break;
+	case "03":
+	case "02":
+	case "01":
+		$nextQuarterMonth = 03;
+		$nextQuarterEdition = '02';
+		$nextQuarterName = "Second Quarter";
+		break;
+	} //end of switch	
+				
 	$Timestamp = mktime(0,0,0,$this->beginMonth+1,$this->beginDay,$this->beginYear);
 	
 	$this->current_publishing_date = $Timestamp;
@@ -187,14 +225,15 @@ function getNextQuaterDate($day_of_month){
 	
 	
 	$Timestamp2 = mktime(0,0,0,date('m',$Timestamp)+2,date('d',$Timestamp)-1,date('Y',$Timestamp));
+	
 	$dateEnd = date('Y',$Timestamp2) . '-' . date('m',$Timestamp2). '-' . date('t',$Timestamp2);
 	
-	$pubdate = date("F",$Timestamp) . ', ' . date('Y',$Timestamp);
+	$pubdate = $nextQuarterName . ", " . date('Y',$Timestamp);
 	
 	$dates = array('date_begin' => $datebegin,
 	'date_end' => $dateEnd,
 	'years' => $this->years,
-	'plus_weeks' => $this->plus_weeks,
+	'plus_weeks' => $nextQuarterEdition,
 	 'pubdate' => $pubdate);
 	return $dates;
 	
@@ -224,7 +263,7 @@ function getNextQuaterDate($day_of_month){
 	$this->plus_weeks = $this->weeks -($this->years *52) + 1;
 	$this->years ++;
 	}
-	if ($this->mode == 'monthly'){
+	if ($this->mode == 'monthly' || $this->mode == 'quarterly'){
 	$yearNow= date('Y',$this->current_publishing_date);
 	$yearStarted = date('Y',$this->Begin_publishing_date);
 	$this->years = $yearNow-$yearStarted;

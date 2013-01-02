@@ -188,14 +188,31 @@ class TestPublicationDateQuarterly extends  UnitTestCase {
 }
 $test3 = &new TestPublicationDateQuarterly();
 $test3->run(new HtmlReporter());
-//
-//$date_returned= $ee->getNextWeekDay('Mon',$edition);
-//		$begin_date = $date_returned['date_begin'];
-//		$end_date = $date_returned['date_end'];
-//		$pubdate = $date_returned['pubdate'];
-//
-//$weekOfMonth = $ee->getWeekOfTheMonth($begin_date);
-////echo "week of the month is " . $weekOfMonth	;
 
-////echo "<br>Week of year is " . $weekOfYear;
+class TestPublicationDateQuarterlyThree extends  UnitTestCase {
+			
+		
+    function testDates() {
+		$ee= new eventEntry;
+		$ee->setMode('quarterly');
+		$ee->set_begin_publishing_date("05/31/2003");
+		$ee->setTodaysTestDate('06/29/2012');
+		$date_returned= $ee->getNextQuaterDate('01');
+		$begin_date = $date_returned['date_begin'];
+		$end_date = $date_returned['date_end'];
+		$pubdate = $date_returned['pubdate'];
+		$volume = $date_returned['years'];
+		$editionNumber = $date_returned['plus_weeks'];
+		$this->assertEqual('2012-07-01',$begin_date);
+		$this->assertEqual('2012-09-30',$end_date);
+		$this->assertEqual('Third Quarter, 2012',$pubdate);
+		$this->assertEqual('09',$volume);
+		$this->assertEqual('03',$editionNumber);
+		
+
+		// $this->assertEqual('2012-12-29',$todays_mysql_date);
+    }
+}
+$test3 = &new TestPublicationDateQuarterlythree();
+$test3->run(new HtmlReporter());
 ?>
