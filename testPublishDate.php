@@ -3,7 +3,6 @@
 require_once('../simpletest/unit_tester.php');
 require_once('../simpletest/web_tester.php');
 require_once('../simpletest/reporter.php');
-require_once('../cgi-bin/connect.inc');
 require_once('PHPClassesClass_evententry.php');
 
 class TestPublicationDateWeekly extends  UnitTestCase {
